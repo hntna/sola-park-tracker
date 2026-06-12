@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sola Park Tracker - Bảng giá căn hộ Imperia Smart City</title>
+    <meta name="description" content="Theo dõi và lọc giá căn hộ dự án Sola Park (Imperia Smart City, Tây Mỗ) từ các nhóm Facebook và trang web BĐS. Cập nhật liên tục.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK (Modular v9) -->
+    <script type="module" src="app.js" defer></script>
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="container">
+        <header class="glass-panel">
+            <div class="logo">
+                <h1>Sola Park Tracker</h1>
+                <p>Khám phá giá trị thực tại Imperia Smart City</p>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="towerFilter">Tòa nhà</label>
+                    <select id="towerFilter">
+                        <option value="all">Tất cả</option>
+                        <option value="G1">G1</option>
+                        <option value="G2">G2</option>
+                        <option value="G3">G3</option>
+                        <option value="GS1">GS1</option>
+                        <!-- Add more towers dynamically if needed -->
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="layoutFilter">Loại căn</label>
+                    <select id="layoutFilter">
+                        <option value="all">Tất cả</option>
+                        <option value="Studio">Studio</option>
+                        <option value="1PN">1PN</option>
+                        <option value="1PN+">1PN+</option>
+                        <option value="2PN">2PN</option>
+                        <option value="2PN+">2PN+</option>
+                        <option value="3PN">3PN</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="directionFilter">Hướng</label>
+                    <select id="directionFilter">
+                        <option value="all">Tất cả</option>
+                        <option value="ĐN">Đông Nam</option>
+                        <option value="TN">Tây Nam</option>
+                        <option value="ĐB">Đông Bắc</option>
+                        <option value="TB">Tây Bắc</option>
+                        <option value="Đ">Đông</option>
+                        <option value="T">Tây</option>
+                        <option value="N">Nam</option>
+                        <option value="B">Bắc</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="priceSort">Sắp xếp giá</label>
+                    <select id="priceSort">
+                        <option value="asc">Thấp đến cao</option>
+                        <option value="desc">Cao xuống thấp</option>
+                        <option value="latest" selected>Mới nhất</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-stats">
+                <span id="resultCount">Đang tải dữ liệu...</span>
+            </div>
+        </header>
+
+        <main>
+            <div id="loading" class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Đang đồng bộ dữ liệu...</p>
+            </div>
+
+            <div id="listingGrid" class="listing-grid hidden">
+                <!-- Cards will be injected here by app.js -->
+            </div>
+        </main>
+        
+        <footer>
+            <p>Dữ liệu được cập nhật tự động từ Facebook & Batdongsan.</p>
+        </footer>
+    </div>
+
+    <!-- Template for a listing card (hidden, used by JS) -->
+    <template id="cardTemplate">
+        <article class="listing-card glass-panel">
+            <div class="card-header">
+                <div class="price-tag">
+                    <span class="price-val"></span>
+                    <span class="price-unit">Tỷ</span>
+                </div>
+                <div class="layout-badge"></div>
+            </div>
+            <div class="card-body">
+                <h3 class="tower-info"></h3>
+                <div class="specs">
+                    <div class="spec-item" title="Diện tích">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 12h16"/><path d="M12 4v16"/></svg>
+                        <span class="area-val"></span>
+                    </div>
+                    <div class="spec-item" title="Hướng">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z"/></svg>
+                        <span class="direction-val"></span>
+                    </div>
+                    <div class="spec-item" title="Tầng">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20"/><path d="M5 22V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v18"/><path d="M9 6h6"/><path d="M9 10h6"/><path d="M9 14h6"/><path d="M9 18h6"/></svg>
+                        <span class="floor-val"></span>
+                    </div>
+                </div>
+                <div class="payment-terms"></div>
+                <div class="card-footer">
+                    <div class="meta">
+                        <span class="time-posted"></span>
+                        <span class="source-tag"></span>
+                    </div>
+                    <a href="#" target="_blank" class="view-btn">
+                        Xem chi tiết
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>
+                </div>
+            </div>
+        </article>
+    </template>
+</body>
+</html>

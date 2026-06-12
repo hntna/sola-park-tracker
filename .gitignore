@@ -1,0 +1,10 @@
+.env
+*.env
+serviceAccount*.json
+firebase-sa*.json
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+cookies*.json
+input/

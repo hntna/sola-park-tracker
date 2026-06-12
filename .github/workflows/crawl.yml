@@ -1,0 +1,35 @@
+name: Crawl Sola Park listings
+
+on:
+  schedule:
+    # 3 lần/ngày (giờ UTC). VN = UTC+7. Đây là 7h, 13h, 21h giờ VN.
+    - cron: "0 0 * * *"
+    - cron: "0 6 * * *"
+    - cron: "0 14 * * *"
+  workflow_dispatch: {}   # cho phép bấm chạy tay trên tab Actions
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cài dependencies
+        run: pip install -r requirements.txt
+
+      - name: Chạy crawler
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_ACTOR_ID: ${{ vars.APIFY_ACTOR_ID }}
+          GROUP_URLS: ${{ vars.GROUP_URLS }}
+          FB_MAX_POSTS: ${{ vars.FB_MAX_POSTS }}
+          FB_COOKIES_JSON: ${{ secrets.FB_COOKIES_JSON }}
+          FIREBASE_SA_JSON: ${{ secrets.FIREBASE_SA_JSON }}
+        run: python main.py

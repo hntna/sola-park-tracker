@@ -1,0 +1,4 @@
+requests>=2.31
+beautifulsoup4>=4.12
+firebase-admin>=6.5
+# playwright>=1.44   # bỏ comment nếu trang BĐS render bằng JavaScript
