@@ -28,7 +28,7 @@ _actor_id_str = os.environ.get("APIFY_ACTOR_ID", "").strip()
 APIFY_ACTOR_ID = _actor_id_str if _actor_id_str else "apify~facebook-groups-scraper"
 _group_urls_env = os.environ.get("GROUP_URLS", "").strip()
 if not _group_urls_env:
-    _group_urls_env = "https://www.facebook.com/groups/874728723021553"
+    _group_urls_env = "https://www.facebook.com/groups/187752929342002"
 GROUP_URLS = [u.strip() for u in _group_urls_env.split(",") if u.strip()]
 _max_posts_str = os.environ.get("FB_MAX_POSTS", "").strip()
 MAX_POSTS = int(_max_posts_str) if _max_posts_str else 50
