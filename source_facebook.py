@@ -24,9 +24,11 @@ from datetime import datetime, timezone
 
 
 APIFY_TOKEN = os.environ.get("APIFY_TOKEN", "")
-APIFY_ACTOR_ID = os.environ.get("APIFY_ACTOR_ID", "apify~facebook-groups-scraper")
+_actor_id_str = os.environ.get("APIFY_ACTOR_ID", "").strip()
+APIFY_ACTOR_ID = _actor_id_str if _actor_id_str else "apify~facebook-groups-scraper"
 GROUP_URLS = [u.strip() for u in os.environ.get("GROUP_URLS", "").split(",") if u.strip()]
-MAX_POSTS = int(os.environ.get("FB_MAX_POSTS", "50"))
+_max_posts_str = os.environ.get("FB_MAX_POSTS", "").strip()
+MAX_POSTS = int(_max_posts_str) if _max_posts_str else 50
 # Tùy chọn: nếu actor nhận cookie qua input thay vì cấu hình sẵn.
 FB_COOKIES_JSON = os.environ.get("FB_COOKIES_JSON", "")
 

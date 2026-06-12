@@ -15,7 +15,8 @@ import urllib.request
 import urllib.error
 
 
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-lite")
+_model_str = os.environ.get("GEMINI_MODEL", "").strip()
+GEMINI_MODEL = _model_str if _model_str else "gemini-2.5-flash-lite"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 _ENDPOINT = (
