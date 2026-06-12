@@ -11,9 +11,7 @@ const firebaseConfig = {
   appId: "1:998620658014:web:7fe8aa335332caa1b0f7cf"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-// Dữ liệu mẫu (Mock Data) hiển thị tạm thời nếu chưa có cấu hình Firebase
+// Initialize Firebase is handled below
 const MOCK_DATA = [
     {
         tower: "G1", area_m2: 32, layout: "Studio", direction: "ĐN", floor_band: "trung",
