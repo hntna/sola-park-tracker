@@ -32,12 +32,16 @@ def _init():
         return _db
     if not firebase_admin._apps:
         sa_json = os.environ.get("FIREBASE_SA_JSON")
-        if sa_json:
-            cred = credentials.Certificate(json.loads(sa_json))
-        else:
-            # fallback: GOOGLE_APPLICATION_CREDENTIALS trỏ tới file
-            cred = credentials.ApplicationDefault()
-        firebase_admin.initialize_app(cred)
+        try:
+            if sa_json:
+                cred = credentials.Certificate(json.loads(sa_json))
+            else:
+                cred = credentials.ApplicationDefault()
+            firebase_admin.initialize_app(cred)
+        except Exception as e:
+            print(f"[store] Lỗi cấu hình Firebase: {e}")
+            print("[store] Vui lòng kiểm tra lại FIREBASE_SA_JSON trong GitHub Secrets.")
+            raise
     _db = firestore.client()
     return _db
 

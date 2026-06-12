@@ -62,10 +62,13 @@ def _strip_code_fence(s: str) -> str:
     return s.strip()
 
 
+_disable_gemini = False
+
 def parse_with_gemini(text: str, max_retries: int = 3) -> dict:
     """Gọi Gemini, trả dict các trường. Trả {} nếu lỗi/không có key."""
-    if not GEMINI_API_KEY:
-        # Không có key -> bỏ qua, để regex result đứng một mình.
+    global _disable_gemini
+    if _disable_gemini or not GEMINI_API_KEY:
+        # Không có key hoặc đã hết quota -> bỏ qua
         return {}
 
     url = _ENDPOINT.format(model=GEMINI_MODEL)
@@ -94,13 +97,19 @@ def parse_with_gemini(text: str, max_retries: int = 3) -> dict:
             parsed = json.loads(raw)
             return _normalize(parsed)
         except urllib.error.HTTPError as e:
+            err_text = e.read().decode('utf-8')
             # 429 = hết quota tạm thời -> chờ rồi thử lại
-            if e.code == 429 and attempt < max_retries - 1:
-                wait = 2 ** attempt * 5
-                print(f"[gemini] 429, chờ {wait}s rồi thử lại...")
-                time.sleep(wait)
-                continue
-            print(f"[gemini] HTTPError {e.code}: {e.read().decode('utf-8')[:200]}")
+            if e.code == 429:
+                if "exceeded your current quota" in err_text:
+                    print("[gemini] API Key đã cạn kiệt Quota. Tạm thời vô hiệu hoá Gemini để code chạy tiếp.")
+                    _disable_gemini = True
+                    return {}
+                if attempt < max_retries - 1:
+                    wait = 2 ** attempt * 5
+                    print(f"[gemini] 429, chờ {wait}s rồi thử lại...")
+                    time.sleep(wait)
+                    continue
+            print(f"[gemini] HTTPError {e.code}: {err_text[:200]}")
             return {}
         except Exception as e:
             print(f"[gemini] lỗi: {e}")
