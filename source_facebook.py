@@ -34,13 +34,14 @@ FB_COOKIES_JSON = os.environ.get("FB_COOKIES_JSON", "")
 
 
 def _actor_input() -> dict:
-    """Input gửi cho actor. Tên trường có thể phải chỉnh theo actor cụ thể bạn dùng
-    (đọc tab Input Schema của actor trên Apify để biết tên đúng)."""
+    """Input gửi cho actor."""
     inp = {
-        "startUrls": [{"url": u} for u in GROUP_URLS],
         "resultsLimit": MAX_POSTS,
         # nhiều actor dùng tên khác: "maxPosts", "maxItems"... chỉnh nếu cần
     }
+    if GROUP_URLS:
+        inp["startUrls"] = [{"url": u} for u in GROUP_URLS]
+    
     if FB_COOKIES_JSON:
         try:
             inp["cookies"] = json.loads(FB_COOKIES_JSON)
@@ -53,9 +54,6 @@ def fetch_facebook_posts() -> list[dict]:
     """Chạy actor đồng bộ và trả danh sách bài đã chuẩn hoá."""
     if not APIFY_TOKEN:
         print("[fb] thiếu APIFY_TOKEN, bỏ qua nguồn Facebook.")
-        return []
-    if not GROUP_URLS:
-        print("[fb] chưa cấu hình GROUP_URLS, bỏ qua nguồn Facebook.")
         return []
 
     url = (
