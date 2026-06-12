@@ -1,15 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// TODO: Thay thế firebaseConfig này bằng config của bạn trong Firebase Console (Project Settings -> Your Apps -> Web)
-const firebaseConfig = {
-
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
+// Cấu hình Firebase thật của bạn
 const firebaseConfig = {
   apiKey: "AIzaSyCW9wBtt0kMoccggxjzTn-aLW6-yxIXtV8",
   authDomain: "sola-tracker.firebaseapp.com",
@@ -21,9 +13,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-};
-
 // Dữ liệu mẫu (Mock Data) hiển thị tạm thời nếu chưa có cấu hình Firebase
 const MOCK_DATA = [
     {
